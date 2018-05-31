@@ -1,23 +1,23 @@
 <template>
   <div id="app">
-    <img src="./assets/logo.png">
+    <v-header></v-header>
+    <v-tab></v-tab>
     <router-view/>
   </div>
 </template>
 
 <script>
+import VHeader from './components/header/Header'
+import VTab from './components/tab/Tab'
 export default {
-  name: 'App'
+  name: 'App',
+  components: {
+    VHeader,
+    VTab
+  }
 }
 </script>
 
 <style>
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
+
 </style>
