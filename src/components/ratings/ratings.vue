@@ -1,11 +1,11 @@
-<!--  -->
+<!-- Ratings -->
 <template>
-  <div>Header</div>
+  <div>Ratings</div>
 </template>
 
 <script>
 export default {
-  name: 'Header',
+  name: 'Ratings',
   data () {
     return {
     }

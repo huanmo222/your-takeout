@@ -5,6 +5,8 @@ import App from './App'
 import router from './router'
 import axios from 'axios'
 
+import 'common/stylus/index.styl'
+
 Vue.config.productionTip = false
 
 // 此项目比较简单, 不做封装了,直接在这里引入使用
