@@ -18,6 +18,9 @@
               <div class="price">
                 <span class="now">¥&nbsp;<span class="now-price">{{food.price}}</span></span><span class="old" v-show="food.oldPrice">¥&nbsp;{{food.oldPrice}}</span>
               </div>
+              <div class="cartcontrol-wrapper">
+                <cartcontrol></cartcontrol>
+              </div>
             </div>
           </li>
         </ul>
@@ -28,8 +31,12 @@
 
 <script>
 import BScroll from 'better-scroll'
+import Cartcontrol from 'components/common/cartcontrol/Cartcontrol'
 export default {
   name: 'Goods',
+  components: {
+    Cartcontrol
+  },
   props: {
     goods: {
       type: Array

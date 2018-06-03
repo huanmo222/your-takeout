@@ -11,12 +11,14 @@
 import VMenu from './menu/Menu'
 import VFoods from './foods/Foods'
 import Shopcart from './shopcart/Shopcart'
+import Cartcontrol from 'components/common/cartcontrol/Cartcontrol'
 export default {
   name: 'Goods',
   components: {
     VMenu,
     VFoods,
-    Shopcart
+    Shopcart,
+    Cartcontrol
   },
   data () {
     return {
