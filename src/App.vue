@@ -13,7 +13,7 @@ export default {
   name: 'App',
   data () {
     return {
-      goods: [],
+      // goods: [],
       ratings: [],
       seller: {}
     }
@@ -31,7 +31,7 @@ export default {
         .then(res => {
           let data = res.data
           if (res.status === 200) {
-            this.goods = data.goods
+            // this.goods = data.goods
             this.ratings = data.ratings
             this.seller = data.seller
             console.log(this.seller)
