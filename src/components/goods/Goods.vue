@@ -3,17 +3,20 @@
   <div class="goods">
     <v-menu @handleMenuClick="handleCurrentChange" :goods="goods" :currentIndex="currentIndex"></v-menu>
     <v-foods @handleCurrentChange="handleCurrentChange" :goods="goods" :currentIndex="currentIndex"></v-foods>
+    <shopcart :deliveryPrice="seller.deliveryPrice" :minPrice="seller.minPrice"></shopcart>
   </div>
 </template>
 
 <script>
 import VMenu from './menu/Menu'
 import VFoods from './foods/Foods'
+import Shopcart from './shopcart/Shopcart'
 export default {
   name: 'Goods',
   components: {
     VMenu,
-    VFoods
+    VFoods,
+    Shopcart
   },
   data () {
     return {
@@ -21,7 +24,8 @@ export default {
       classMap: ['decrease', 'discount', 'guarantee', 'invoice', 'special'],
       listHeight: [],
       scrollY: 0,
-      currentIndex: 0
+      currentIndex: 0,
+      seller: {}
     }
   },
   mounted () {
@@ -34,6 +38,7 @@ export default {
           let data = res.data
           if (res.status === 200) {
             this.goods = data.goods
+            this.seller = data.seller
             console.log(this.goods)
           }
         })
