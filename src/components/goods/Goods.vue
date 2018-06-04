@@ -3,7 +3,7 @@
   <div class="goods">
     <v-menu @handleMenuClick="handleCurrentChange" :goods="goods" :currentIndex="currentIndex"></v-menu>
     <v-foods @handleCurrentChange="handleCurrentChange" :goods="goods" :currentIndex="currentIndex"></v-foods>
-    <shopcart :deliveryPrice="seller.deliveryPrice" :minPrice="seller.minPrice"></shopcart>
+    <shopcart :select-foods="selectFoods" :deliveryPrice="seller.deliveryPrice" :minPrice="seller.minPrice"></shopcart>
   </div>
 </template>
 
@@ -28,6 +28,19 @@ export default {
       scrollY: 0,
       currentIndex: 0,
       seller: {}
+    }
+  },
+  computed: {
+    selectFoods () {
+      let foods = []
+      this.goods.forEach(good => {
+        good.foods.forEach(food => {
+          if (food.count) {
+            foods.push(food)
+          }
+        })
+      })
+      return foods
     }
   },
   mounted () {

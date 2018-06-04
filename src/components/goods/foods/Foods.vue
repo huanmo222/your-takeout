@@ -19,7 +19,7 @@
                 <span class="now">¥&nbsp;<span class="now-price">{{food.price}}</span></span><span class="old" v-show="food.oldPrice">¥&nbsp;{{food.oldPrice}}</span>
               </div>
               <div class="cartcontrol-wrapper">
-                <cartcontrol></cartcontrol>
+                <cartcontrol :food="food" class="cartcontrol"></cartcontrol>
               </div>
             </div>
           </li>
@@ -161,4 +161,9 @@ export default {
               font-weight 700
           .old
             text-decoration line-through
+        .cartcontrol-wrapper
+          position absolute
+          right 0rem
+          bottom .24rem
+
 </style>

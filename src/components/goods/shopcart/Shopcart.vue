@@ -13,6 +13,11 @@
         <div class="desc">另需配送费 ¥{{deliveryPrice}} 元</div>
       </div>
       <div class="content-right" :class="{'enough': payDesc=='去结算'}">{{payDesc}}</div>
+      <transition name="drop">
+        <div class="ball-container">
+          <div class="ball" v-for="(ball,index) in balls" :key="index" v-show="ball.show"></div>
+        </div>
+      </transition>
     </div>
   </div>
 </template>
@@ -22,13 +27,7 @@ export default {
   name: 'Shopcart',
   props: {
     selectFoods: {
-      type: Array,
-      default () {
-        return [{
-          price: 10,
-          count: 2
-        }]
-      }
+      type: Array
     },
     deliveryPrice: {
       type: Number,
@@ -37,6 +36,23 @@ export default {
     minPrice: {
       type: Number,
       default: 0
+    }
+  },
+  data () {
+    return {
+      balls: [
+        {
+          show: false
+        }, {
+          show: false
+        }, {
+          show: false
+        }, {
+          show: false
+        }, {
+          show: false
+        }
+      ]
     }
   },
   computed: {
@@ -157,4 +173,14 @@ export default {
         &.enough
           background #00bd3c
           color #fff
+      .ball-container
+        .ball
+          position fixed
+          left .64rem
+          bottom .44rem
+          z-index 200
+          width .32rem
+          height .32rem
+          border-radius 50%
+          background rgb(0, 160, 220)
 </style>
