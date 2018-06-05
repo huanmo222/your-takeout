@@ -3,7 +3,7 @@
   <div class="goods">
     <v-menu @handleMenuClick="handleCurrentChange" :goods="goods" :currentIndex="currentIndex"></v-menu>
     <v-foods @handleCurrentChange="handleCurrentChange" :goods="goods" :currentIndex="currentIndex"></v-foods>
-    <shopcart :select-foods="selectFoods" :deliveryPrice="seller.deliveryPrice" :minPrice="seller.minPrice"></shopcart>
+    <shopcart ref="shopcart" :select-foods="selectFoods" :deliveryPrice="seller.deliveryPrice" :minPrice="seller.minPrice"></shopcart>
   </div>
 </template>
 

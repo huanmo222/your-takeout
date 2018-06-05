@@ -18,6 +18,7 @@
 </template>
 
 <script>
+import { mapState, mapMutations } from 'vuex'
 export default {
   name: 'Cartcontrol',
   props: {
@@ -29,13 +30,26 @@ export default {
     return {
     }
   },
+  computed: {
+    ...mapState({
+      balls: state => state.balls.balls
+    })
+  },
   methods: {
-    addCart () {
+    ...mapMutations(['changeShow', 'changeDropBall']),
+    addCart (event) {
       console.log('click')
       if (!this.food.count) {
         this.$set(this.food, 'count', 1)
       } else {
         this.food.count++
+      }
+      for (let i = 0; i < this.balls.length; i++) {
+        if (!this.balls[i].show) {
+          this.changeShow({index: i, isShow: true, el: event.target})
+          this.changeDropBall(this.balls[i])
+          return
+        }
       }
     },
     decreaseCart () {

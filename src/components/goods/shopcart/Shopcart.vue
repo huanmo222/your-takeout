@@ -13,16 +13,17 @@
         <div class="desc">另需配送费 ¥{{deliveryPrice}} 元</div>
       </div>
       <div class="content-right" :class="{'enough': payDesc=='去结算'}">{{payDesc}}</div>
-      <transition name="drop">
-        <div class="ball-container">
-          <div class="ball" v-for="(ball,index) in balls" :key="index" v-show="ball.show"></div>
-        </div>
-      </transition>
+      <div class="ball-container">
+        <transition v-for="(ball,index) in balls" :key="index" name="drop" @before-enter="beforeEnter" @enter="enter" @after-enter="afterEnter">
+          <div class="ball" v-show="ball.show" ></div>
+        </transition>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
+import { mapState, mapMutations } from 'vuex'
 export default {
   name: 'Shopcart',
   props: {
@@ -40,22 +41,13 @@ export default {
   },
   data () {
     return {
-      balls: [
-        {
-          show: false
-        }, {
-          show: false
-        }, {
-          show: false
-        }, {
-          show: false
-        }, {
-          show: false
-        }
-      ]
     }
   },
   computed: {
+    ...mapState({
+      balls: state => state.balls.balls,
+      dropBall: state => state.balls.dropBall
+    }),
     totalPrice () {
       let total = 0
       this.selectFoods.forEach(ele => {
@@ -78,6 +70,39 @@ export default {
         return `还差${diff}元起送`
       } else {
         return `去结算`
+      }
+    }
+  },
+  methods: {
+    ...mapMutations(['changeShow', 'changeDropBall']),
+    beforeEnter (el) {
+      let count = this.balls.length
+      while (count--) {
+        let ball = this.balls[count]
+        if (ball.show) {
+          let rect = ball.el.getBoundingClientRect()
+          let x = rect.left - 32
+          let y = -(window.innerHeight - rect.top - 22)
+          el.style.display = ''
+          el.style.webkitTransform = `translate3d(${x}px, ${y}px, 0)`
+          el.style.transform = `translate3d(${x}px, ${y}px, 0)`
+        }
+      }
+    },
+    enter (el) {
+      // 触发浏览器重绘
+      /* eslint-disable no-unused-vars */
+      let rf = el.offsetHeight
+      this.$nextTick(() => {
+        el.style.webkitTransform = 'translate3d(0, 0, 0)'
+        el.style.transform = 'translate3d(0, 0, 0)'
+      })
+    },
+    afterEnter (el) {
+      let ball = this.dropBall.shift()
+      if (ball) {
+        ball.show = false
+        el.style.display = 'none'
       }
     }
   }
@@ -183,4 +208,6 @@ export default {
           height .32rem
           border-radius 50%
           background rgb(0, 160, 220)
+          &.drop-enter-active
+            transition: all .4s cubic-bezier(0.49, -0.29, 0.75, 0.41)
 </style>
