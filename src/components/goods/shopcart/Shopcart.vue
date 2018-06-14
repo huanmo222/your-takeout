@@ -15,7 +15,9 @@
       <div class="content-right" :class="{'enough': payDesc=='去结算'}">{{payDesc}}</div>
       <div class="ball-container">
         <transition v-for="(ball,index) in balls" :key="index" name="drop" @before-enter="beforeEnter" @enter="enter" @after-enter="afterEnter">
-          <div class="ball" v-show="ball.show" ></div>
+          <div class="ball" v-show="ball.show" >
+            <div class="inner inner-hook"></div>
+          </div>
         </transition>
       </div>
     </div>
@@ -84,8 +86,12 @@ export default {
           let x = rect.left - 32
           let y = -(window.innerHeight - rect.top - 22)
           el.style.display = ''
-          el.style.webkitTransform = `translate3d(${x}px, ${y}px, 0)`
-          el.style.transform = `translate3d(${x}px, ${y}px, 0)`
+          el.style.webkitTransform = `translate3d(0, ${y}px, 0)`
+          el.style.transform = `translate3d(0, ${y}px, 0)`
+          let inner = el.getElementsByClassName('inner-hook')[0]
+          inner.style.webkitTransform = `translate3d(${x}px, 0, 0)`
+          inner.style.transform = `translate3d(${x}px, 0, 0)`
+          console.log(inner)
         }
       }
     },
@@ -96,9 +102,13 @@ export default {
       this.$nextTick(() => {
         el.style.webkitTransform = 'translate3d(0, 0, 0)'
         el.style.transform = 'translate3d(0, 0, 0)'
+        let inner = el.getElementsByClassName('inner-hook')[0]
+        inner.style.webkitTransform = `translate3d(0, 0, 0)`
+        inner.style.transform = `translate3d(0, 0, 0)`
       })
     },
     afterEnter (el) {
+      // 删除数组第一个元素, 并返回第一个元素,因对象都是指向地址,所以操作dropBall数组也就操作了balls数组
       let ball = this.dropBall.shift()
       if (ball) {
         ball.show = false
@@ -207,7 +217,13 @@ export default {
           width .32rem
           height .32rem
           border-radius 50%
-          background rgb(0, 160, 220)
+          // background rgb(0, 160, 220)
           &.drop-enter-active
             transition: all .4s cubic-bezier(0.49, -0.29, 0.75, 0.41)
+          .inner
+            width .32rem
+            height .32rem
+            border-radius 50%
+            background rgb(0, 160, 220)
+            transition: all .4s linear
 </style>
