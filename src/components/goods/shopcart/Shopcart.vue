@@ -1,8 +1,31 @@
 <!-- Goods -->
 <template>
   <div class="shopcart">
+    <transition name="fold">
+      <div class="shopcart-list" v-show="listShow">
+        <div class="list-header">
+          <div class="title">购物车</div>
+          <div class="empty">清空</div>
+        </div>
+        <div class="list-content">
+          <ul>
+            <li class="food" v-for="(food, index) in selectFoods" :key="index">
+              <span class="name">{{food.name}}</span>
+              <div class="food-right">
+                <div class="price">
+                  <span>¥{{food.price*food.count}}</span>
+                </div>
+                <div class="cartcontrol-wrapper">
+                  <cartcontrol :food="food"></cartcontrol>
+                </div>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </transition>
     <div class="content">
-      <div class="content-left">
+      <div class="content-left" @click="toggleList">
         <div class="logo-wrapper">
           <div class="logo" :class="{'highlight': totalCount>0}">
             <i class="icon-shopping_cart" :class="{'highlight': totalCount>0}"></i>
@@ -26,8 +49,12 @@
 
 <script>
 import { mapState, mapMutations } from 'vuex'
+import Cartcontrol from 'components/common/cartcontrol/Cartcontrol'
 export default {
   name: 'Shopcart',
+  components: {
+    Cartcontrol
+  },
   props: {
     selectFoods: {
       type: Array
@@ -43,6 +70,7 @@ export default {
   },
   data () {
     return {
+      fold: true// 折叠
     }
   },
   computed: {
@@ -73,6 +101,14 @@ export default {
       } else {
         return `去结算`
       }
+    },
+    listShow () {
+      if (!this.totalCount) {
+        this.fold = true
+        return false
+      }
+      let show = !this.fold
+      return show
     }
   },
   methods: {
@@ -82,16 +118,19 @@ export default {
       while (count--) {
         let ball = this.balls[count]
         if (ball.show) {
+          // 返回值是一个 DOMRect 对象, 此包含了一组用于描述边框的只读属性——left、top、right和bottom，单位为像素。
+          // 除了 width 和 height 外的属性都是相对于视口的左上角位置而言的。
           let rect = ball.el.getBoundingClientRect()
           let x = rect.left - 32
           let y = -(window.innerHeight - rect.top - 22)
+          // 小球外层控制y轴的运动轨迹,translate3d()可以开启硬件加速
           el.style.display = ''
           el.style.webkitTransform = `translate3d(0, ${y}px, 0)`
           el.style.transform = `translate3d(0, ${y}px, 0)`
+          // 内层小球控制x轴运动轨迹,内外层运动方式是不一样的, y轴贝塞尔曲线, x轴匀速.
           let inner = el.getElementsByClassName('inner-hook')[0]
           inner.style.webkitTransform = `translate3d(${x}px, 0, 0)`
           inner.style.transform = `translate3d(${x}px, 0, 0)`
-          console.log(inner)
         }
       }
     },
@@ -114,6 +153,12 @@ export default {
         ball.show = false
         el.style.display = 'none'
       }
+    },
+    toggleList () {
+      if (!this.totalCount) {
+        return
+      }
+      this.fold = !this.fold
     }
   }
 }
@@ -129,10 +174,10 @@ export default {
     left 0
     width 100%
     height .92rem
-    background #141d27
     .content
       display flex
       height .92rem
+      background #141d27
       .content-left
         flex 1
         position relative
@@ -158,7 +203,7 @@ export default {
             text-align center
             border-radius .32rem
             font-size .18rem
-            color #ffffff
+            color #fff
             background rgb(240, 20, 20)
             box-shadow 0 .8rem .16rem 0 rgba(0,0,0,.4)
           .logo
@@ -217,7 +262,6 @@ export default {
           width .32rem
           height .32rem
           border-radius 50%
-          // background rgb(0, 160, 220)
           &.drop-enter-active
             transition: all .4s cubic-bezier(0.49, -0.29, 0.75, 0.41)
           .inner
@@ -226,4 +270,57 @@ export default {
             border-radius 50%
             background rgb(0, 160, 220)
             transition: all .4s linear
+    .shopcart-list
+      position absolute
+      left 0
+      bottom 0.92rem
+      z-index -100
+      width 100%
+      &.fold-enter, &.fold-leave-to
+        transform translate3d(0, 100%, 0)
+      &.fold-enter-to, &.fold-leave
+        transform translate3d(0, 0, 0)
+      &.fold-enter-active, &.fold-leave-active
+        transition: all .5s linear
+      .list-header
+        display flex
+        justify-content space-between
+        align-items center
+        height .8rem
+        line-height .8rem
+        padding 0 .36rem
+        background #f3f5f7
+        border-bottom 2px solid rgba(7, 17, 27, 0.1)
+        .title
+          font-size .28rem
+          color rgb(7, 17, 27)
+        .empty
+          font-size .24rem
+          color rgb(0, 160, 220)
+      .list-content
+        padding 0 .36rem
+        max-height 4.34rem
+        overflow hidden
+        background #fff
+        .food
+          display flex
+          justify-content space-between
+          align-items center
+          padding .24rem 0
+          border-1px(rgba(7, 17, 27, 0.1))
+          .name
+            line-height .48rem
+            font-size .28rem
+            color rgb(7, 17, 27)
+          .food-right
+            display flex
+            justify-content space-between
+            align-items center
+            .price
+              margin-right .2rem
+              line-height .48rem
+              font-size .28rem
+              font-weight 700
+              color rgb(240, 20, 20)
+
 </style>
