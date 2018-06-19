@@ -1,47 +1,53 @@
-<!-- Goods -->
+<!-- Shopcart -->
 <template>
-  <div class="shopcart">
-    <transition name="fold">
-      <div class="shopcart-list" v-show="listShow">
-        <div class="list-header">
-          <div class="title">购物车</div>
-          <div class="empty">清空</div>
-        </div>
-        <div class="list-content">
-          <ul>
-            <li class="food" v-for="(food, index) in selectFoods" :key="index">
-              <span class="name">{{food.name}}</span>
-              <div class="food-right">
-                <div class="price">
-                  <span>¥{{food.price*food.count}}</span>
-                </div>
-                <div class="cartcontrol-wrapper">
-                  <cartcontrol :food="food"></cartcontrol>
-                </div>
-              </div>
-            </li>
-          </ul>
-        </div>
-      </div>
+  <div>
+    <transition name="mask">
+      <div class="list-mask" v-show="listShow" @click="handleMaskClick"></div>
     </transition>
-    <div class="content">
-      <div class="content-left" @click="toggleList">
-        <div class="logo-wrapper">
-          <div class="logo" :class="{'highlight': totalCount>0}">
-            <i class="icon-shopping_cart" :class="{'highlight': totalCount>0}"></i>
+    <div class="shopcart">
+      <transition name="fold">
+        <div class="shopcart-list" v-show="listShow">
+          <div class="list-header">
+            <div class="title">购物车</div>
+            <div class="empty" @click="handleEmptyClick">清空</div>
           </div>
-          <div class="num" v-show="totalCount>0">{{totalCount}}</div>
+          <div class="listContent" ref="listContent">
+            <ul>
+              <li class="food" v-for="(food, index) in selectFoods" :key="index">
+                <span class="name">{{food.name}}</span>
+                <div class="food-right">
+                  <div class="price">
+                    <span>¥{{food.price*food.count}}</span>
+                  </div>
+                  <div class="cartcontrol-wrapper">
+                    <cartcontrol :food="food"></cartcontrol>
+                  </div>
+                </div>
+              </li>
+            </ul>
+          </div>
         </div>
-        <div class="price" :class="{'highlight': totalPrice>0}">¥{{totalPrice}}</div>
-        <div class="desc">另需配送费 ¥{{deliveryPrice}} 元</div>
-      </div>
-      <div class="content-right" :class="{'enough': payDesc=='去结算'}">{{payDesc}}</div>
-      <div class="ball-container">
-        <transition v-for="(ball,index) in balls" :key="index" name="drop" @before-enter="beforeEnter" @enter="enter" @after-enter="afterEnter">
-          <div class="ball" v-show="ball.show" >
-            <div class="inner inner-hook"></div>
+      </transition>
+      <div class="content" @click="toggleList">
+        <div class="content-left">
+          <div class="logo-wrapper">
+            <div class="logo" :class="{'highlight': totalCount>0}">
+              <i class="icon-shopping_cart" :class="{'highlight': totalCount>0}"></i>
+            </div>
+            <div class="num" v-show="totalCount>0">{{totalCount}}</div>
           </div>
-        </transition>
+          <div class="price" :class="{'highlight': totalPrice>0}">¥{{totalPrice}}</div>
+          <div class="desc">另需配送费 ¥{{deliveryPrice}} 元</div>
+        </div>
+        <!-- 当点击去结算的时候, 使列表的显示与隐藏的点击不被触发, 就需要阻止冒泡 -->
+        <div class="content-right" :class="{'enough': payDesc=='去结算'}" @click.stop.prevent="handlePayClick">{{payDesc}}</div>
+        <div class="ball-container">
+          <transition v-for="(ball,index) in balls" :key="index" name="drop" @before-enter="beforeEnter" @enter="enter" @after-enter="afterEnter">
+            <div class="ball" v-show="ball.show" >
+              <div class="inner inner-hook"></div>
+            </div>
+          </transition>
+        </div>
       </div>
     </div>
   </div>
@@ -50,6 +56,7 @@
 <script>
 import { mapState, mapMutations } from 'vuex'
 import Cartcontrol from 'components/common/cartcontrol/Cartcontrol'
+import BScroll from 'better-scroll'
 export default {
   name: 'Shopcart',
   components: {
@@ -104,10 +111,23 @@ export default {
     },
     listShow () {
       if (!this.totalCount) {
+        // 计算属性一般不要进行复制操作, 计算属性的set的需要自身的值发生变化才可以触发.
+        // eslint-disable-next-line
         this.fold = true
         return false
       }
       let show = !this.fold
+      if (show) {
+        this.$nextTick(() => {
+          // 如果已经初始化过, 就只刷新就可以了.
+          if (!this.scroll) {
+            // eslint-disable-next-line
+            this.scroll = new BScroll(this.$refs.listContent, {click: true})
+          } else {
+            this.scroll.refresh()
+          }
+        })
+      }
       return show
     }
   },
@@ -159,6 +179,20 @@ export default {
         return
       }
       this.fold = !this.fold
+    },
+    handleEmptyClick () {
+      this.selectFoods.forEach(food => {
+        food.count = 0
+      })
+    },
+    handleMaskClick () {
+      this.fold = true
+    },
+    handlePayClick () {
+      if (this.payDesc === '去结算') {
+        // this.$router.push('/')
+        window.alert(`需支付${this.totalPrice}元`)
+      }
     }
   }
 }
@@ -297,7 +331,7 @@ export default {
         .empty
           font-size .24rem
           color rgb(0, 160, 220)
-      .list-content
+      .listContent
         padding 0 .36rem
         max-height 4.34rem
         overflow hidden
@@ -317,10 +351,28 @@ export default {
             justify-content space-between
             align-items center
             .price
-              margin-right .2rem
+              margin-right .24rem
               line-height .48rem
               font-size .28rem
               font-weight 700
               color rgb(240, 20, 20)
-
+  .list-mask
+    position fixed
+    top 0
+    left 0
+    width 100%
+    height 100%
+    opacity 1
+    // 动画需要设置一个静态的背景色
+    background rgba(7, 17, 27, 0.6)
+    // z-index 40
+    backdrop-filter blur(.2rem)
+    &.mask-enter, &.mask-leave-to
+      opacity 0
+      background rgba(7, 17, 27, 0)
+    &.mask-enter-to, &.mask-leave
+      opacity 1
+      background rgba(7, 17, 27, 0.6)
+    &.mask-enter-active, &.mask-leave-active
+      transition: all .4s linear
 </style>

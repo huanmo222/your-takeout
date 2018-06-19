@@ -69,7 +69,8 @@ export default {
     font-size 0
     transition all .5s
     -webkit-backdrop-filter blur(.1rem)
-    &.fade-transition
+    // &.fade-transition
+    &.fade-enter-to, &.fade-leave
       opacity 1
       background-color rgba(7, 17, 27, 0.8)
     &.fade-enter, &.fade-leave-to

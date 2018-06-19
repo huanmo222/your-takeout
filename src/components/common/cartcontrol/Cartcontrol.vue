@@ -38,7 +38,6 @@ export default {
   methods: {
     ...mapMutations(['changeShow', 'changeDropBall']),
     addCart (event) {
-      console.log('click')
       if (!this.food.count) {
         this.$set(this.food, 'count', 1)
       } else {
