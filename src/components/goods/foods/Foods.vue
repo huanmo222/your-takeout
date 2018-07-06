@@ -5,7 +5,12 @@
       <li class="food-list" v-for="(item, index) in goods" :key="index" :ref="'food'+index">
         <h1 class="title">{{item.name}}</h1>
         <ul>
-          <li class="food-item border-1px" v-for="(food, i) in item.foods" :key="i">
+          <li
+            class="food-item border-1px"
+            v-for="(food, i) in item.foods"
+            :key="i"
+            @click="handleSelectedFood(food)"
+          >
             <div class="icon">
               <img class="icon-img" :src="food.icon">
             </div>
@@ -95,6 +100,9 @@ export default {
         this._calculateHeight()
         this.currentFoodIndex = this.getCurrentFoodIndex()
       })
+    },
+    handleSelectedFood (food) {
+      this.$emit('handleSelectedFood', food)
     }
   }
 }

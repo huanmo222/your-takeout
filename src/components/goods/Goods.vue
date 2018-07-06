@@ -2,8 +2,13 @@
 <template>
   <div class="goods">
     <v-menu @handleMenuClick="handleCurrentChange" :goods="goods" :currentIndex="currentIndex"></v-menu>
-    <v-foods @handleCurrentChange="handleCurrentChange" :goods="goods" :currentIndex="currentIndex"></v-foods>
+    <v-foods
+      @handleCurrentChange="handleCurrentChange"
+      @handleSelectedFood="handleSelectedFood"
+      :goods="goods" :currentIndex="currentIndex"
+    ></v-foods>
     <shopcart ref="shopcart" :select-foods="selectFoods" :deliveryPrice="seller.deliveryPrice" :minPrice="seller.minPrice"></shopcart>
+    <food :food="selectedFood" ref="food" ></food>
   </div>
 </template>
 
@@ -11,6 +16,7 @@
 import VMenu from './menu/Menu'
 import VFoods from './foods/Foods'
 import Shopcart from './shopcart/Shopcart'
+import Food from './fooddetail/FoodDetail'
 import Cartcontrol from 'components/common/cartcontrol/Cartcontrol'
 export default {
   name: 'Goods',
@@ -18,7 +24,8 @@ export default {
     VMenu,
     VFoods,
     Shopcart,
-    Cartcontrol
+    Cartcontrol,
+    Food
   },
   data () {
     return {
@@ -27,7 +34,8 @@ export default {
       listHeight: [],
       scrollY: 0,
       currentIndex: 0,
-      seller: {}
+      seller: {},
+      selectedFood: {} // 点击选中的food,展示详情页面
     }
   },
   computed: {
@@ -47,6 +55,7 @@ export default {
     this.getInfor()
   },
   methods: {
+    // 以下划线开始的方法, 一般是私有方法
     getInfor () {
       this.$axios.get('../static/mock/data.json')
         .then(res => {
@@ -59,8 +68,12 @@ export default {
         })
     },
     handleCurrentChange (index) {
-      console.log(index)
+      // console.log(index)
       this.currentIndex = index
+    },
+    handleSelectedFood (food) {
+      this.selectedFood = food
+      this.$refs.food.handleShowFlag()
     }
   }
 }

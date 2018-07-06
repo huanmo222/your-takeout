@@ -2,7 +2,7 @@
 <template>
   <div class="cartcontrol">
     <transition name="decrease">
-      <div class="cart-decrease" v-show="food.count>0" @click="decreaseCart">
+      <div class="cart-decrease" v-show="food.count>0" @click.stop="decreaseCart">
         <i class="icon-remove_circle_outline"></i>
       </div>
     </transition>
@@ -10,7 +10,7 @@
       <div class="cart-count" v-show="food.count>0">{{food.count}}</div>
     </transition>
     <transition name="add">
-      <div class="cart-add" @click="addCart">
+      <div class="cart-add" @click.stop="addCart">
         <i class="icon-add_circle"></i>
       </div>
     </transition>
@@ -43,6 +43,9 @@ export default {
       } else {
         this.food.count++
       }
+      this.add(event)
+    },
+    add (event) {
       for (let i = 0; i < this.balls.length; i++) {
         if (!this.balls[i].show) {
           this.changeShow({index: i, isShow: true, el: event.target})
