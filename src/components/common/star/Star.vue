@@ -54,7 +54,7 @@ export default {
       .star-item
         width .4rem
         height .38rem
-        margin-right .43rem
+        margin-right .4rem
         &:last-child
           margin-right 0
         &.on
@@ -67,7 +67,7 @@ export default {
       .star-item
         width .3rem
         height .29rem
-        margin-right .2rem
+        margin-right .14rem
         &:last-child
           margin-right 0
         &.on
