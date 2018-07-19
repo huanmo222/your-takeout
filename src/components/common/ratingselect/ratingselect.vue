@@ -29,18 +29,21 @@ const ALL = 2
 export default {
   name: 'ratingSelect',
   props: {
+    // 用来计算好评与否的信息条数
     ratings: {
       type: Array,
       default () {
         return []
       }
     },
+    // 当前选中
     selectType: {
       type: Number,
       default () {
         return ALL
       }
     },
+    // 只看内容
     onlyContent: {
       type: Boolean,
       default: false

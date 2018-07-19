@@ -2,9 +2,9 @@
 <template>
   <div class="seller-infor">
     <div class="title">
-      <div class="line"></div>
+      <div class="line" v-show="title"></div>
       <div class="title-text">{{title}}</div>
-      <div class="line"></div>
+      <div class="line" v-show="title"></div>
     </div>
     <div class="content">
       <slot ></slot>

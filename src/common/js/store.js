@@ -1,0 +1,30 @@
+// 存储本地的通用方法
+export function saveToLocal (id, key, val) {
+  let seller = window.localStorage._seller_
+  if (!seller) {
+    seller = {}
+    seller[id] = {}
+  } else {
+    seller = JSON.parse(seller)
+    if (!seller[id]) {
+      seller[id] = {}
+    }
+  }
+  seller[id][key] = val
+  window.localStorage._seller_ = JSON.stringify(seller)
+}
+
+// def: 默认值
+export function loadFromLocal (id, key, def) {
+  let seller = window.localStorage._seller_
+  if (!seller) {
+    return def
+  } else {
+    seller = JSON.parse(seller)[id]
+    if (!seller) {
+      return def
+    }
+    let ret = seller[key]
+    return ret || def
+  }
+}

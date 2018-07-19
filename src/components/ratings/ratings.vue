@@ -109,7 +109,6 @@ export default {
     } else {
       this.scroll.refresh()
     }
-    console.log(this.scroll)
   },
   methods: {
     // 子组件调用改变父组件的selectType
@@ -229,7 +228,7 @@ export default {
             margin-bottom .08rem
             .username
               color rgb(7, 17, 27)
-            .time  
+            .time
               color rgb(147, 153, 159)
           .star-wrapper
             display flex
